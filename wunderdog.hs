@@ -17,7 +17,15 @@ muut = "wrtpsdfghjklzxcvbnmWRTPSDFGHJKLZXCVBNM0123456789-"
 
 data Ehdokas = Ehdokas { otaSana :: String
                        , otaPisteet :: Int
-                       } deriving (Show)   
+                       } deriving (Show)
+
+instance Eq Ehdokas where
+    Ehdokas sanaA pisteetA == Ehdokas sanaB pisteetB =
+        pisteetA == pisteetB
+
+instance Ord Ehdokas where
+    Ehdokas sanaA pisteetA `compare` Ehdokas sanaB pisteetB =
+        pisteetA `compare` pisteetB
 
 
 -- Tuloksen selvittäminen
@@ -33,22 +41,34 @@ sanoiksi teksti =
             then []
             else sana : sanoiksi lopuksiSiivottu
 
+ketjusta pituus =
+    pituus * (2 ^ pituus)
+
 pisteytä sana =
     let ketjut = splitOneOf muut sana
         ketjuPituudet = map length ketjut
-        ketjuPisteet = map (\n -> n * (2 ^ n)) ketjuPituudet
+        ketjuPisteet = map ketjusta ketjuPituudet
         in sum ketjuPisteet
 
---vainParhaat' 
---vainParhaat 
+ehdokkaaksi sana =
+    let pisteet = pisteytä sana
+        in Ehdokas sana pisteet
+
+päivitäJohto johto uusiEhdokas =
+    case compare uusiEhdokas $ head johto of
+        LT -> johto
+        EQ -> uusiEhdokas : johto
+        GT -> [uusiEhdokas]
+
+parhaat ehdokkaat@(ehdokas:loput) =
+    if length ehdokkaat < 1
+        then []
+        else foldl päivitäJohto [ehdokas] loput
 
 hassuimmat teksti =
     let sanat = sanoiksi teksti
-        yksilölliset = nub sanat
-        pisteet = map pisteytä yksilölliset
-        tulokset = zip pisteet yksilölliset
-        voittopisteet = maximum pisteet
-        voittajat = [Ehdokas sana voittopisteet| (pisteet, sana) <- tulokset, pisteet == voittopisteet]
+        ehdokkaat = map ehdokkaaksi sanat
+        voittajat = parhaat ehdokkaat
         in voittajat
 
 
