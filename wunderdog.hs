@@ -10,17 +10,20 @@ import Debug.Trace
 import Data.Char (ord)
 
 
--- Merkkien luokittelu
-
 erottimet = " ':.\r\n,?;!()\"_/"
 vokaalit = "qeyuioåaöäüQEYUIOÅAÖÄÜ"
 muut = "wrtpsdfghjklzxcvbnmWRTPSDFGHJKLZXCVBNM0123456789-"
 
-erotinJoukko = Set.fromList erottimet
-erotinko kirjain = Set.member kirjain erotinJoukko
+
+data Ehdokas = Ehdokas { otaSana :: String
+                       , otaPisteet :: Int
+                       } deriving (Show)   
 
 
 -- Tuloksen selvittäminen
+
+erotinJoukko = Set.fromList erottimet
+erotinko kirjain = Set.member kirjain erotinJoukko
 
 sanoiksi teksti =
     let alkuunSiivottu = dropWhile erotinko teksti
@@ -36,14 +39,17 @@ pisteytä sana =
         ketjuPisteet = map (\n -> n * (2 ^ n)) ketjuPituudet
         in sum ketjuPisteet
 
+--vainParhaat' 
+--vainParhaat 
+
 hassuimmat teksti =
     let sanat = sanoiksi teksti
         yksilölliset = nub sanat
         pisteet = map pisteytä yksilölliset
         tulokset = zip pisteet yksilölliset
-        voittoPisteet = maximum pisteet
-        voittajat = [sana | (pisteet, sana) <- tulokset, pisteet == voittoPisteet]
-        in (voittoPisteet, voittajat)
+        voittopisteet = maximum pisteet
+        voittajat = [Ehdokas sana voittopisteet| (pisteet, sana) <- tulokset, pisteet == voittopisteet]
+        in voittajat
 
 
 -- Pääohjelma
@@ -57,9 +63,12 @@ main = do
 
 -- Tulosteen muotoilu
 
-muotoileVastaus (voittopisteet, voittajat) = 
-    let voittajaLista = intercalate ", " $ sort voittajat
+muotoileVastaus tulos = 
+    let voittajaSanat = map otaSana tulos
+        voittajaLista = intercalate ", " $ sort $ voittajaSanat
         voittajaLause = "Hassuimmat sanat olivat: " ++ voittajaLista
+        eräsVoittaja = head tulos
+        voittopisteet = otaPisteet eräsVoittaja
         pisteLause = "Nämä saivat " ++ (show voittopisteet) ++ " pistettä."
         lauseet = [voittajaLause, pisteLause]
         vastaus = intercalate "\n" lauseet
