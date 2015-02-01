@@ -4,3 +4,6 @@ wunderdog
 *.hi
 *.o
 *.prof
+*.aux
+*.hp
+*.ps
