@@ -1,19 +1,15 @@
-import System.Environment
-import Control.Exception
-import System.IO.Error
-import System.IO.Strict (readFile)
-import Prelude hiding (readFile,)
-import qualified Data.Set as Set
-import Data.List
-import Data.List.Split
-import Debug.Trace
-import Data.Char (ord)
+import System.Environment (getArgs)
+import Data.List (intercalate, sort)
 import Text.Regex (splitRegex, mkRegex)
 
+
+-- Merkkien luokittelu
 
 erotinKuvaus = mkRegex "\\ |'|\\:|\\.|\r|\n|\\,|\\?|\\;|\\!|\\(|\\)|\\\"|\\_|\\/"
 konsonanttiKuvaus = mkRegex "q|w|r|t|p|s|d|f|g|h|j|k|l|z|x|c|v|b|n|m|Q|W|R|T|P|S|D|F|G|H|J|K|L|Z|X|C|V|B|N|M|0|1|2|3|4|5|6|7|8|9|-"
 
+
+-- Tietotyyppien määrittelyt
 
 data Ehdokas = Ehdokas { otaSana :: String
                        , otaPisteet :: Int
@@ -21,11 +17,11 @@ data Ehdokas = Ehdokas { otaSana :: String
 
 instance Eq Ehdokas where
     Ehdokas sanaA pisteetA == Ehdokas sanaB pisteetB =
-        pisteetA == pisteetB
+                  pisteetA == pisteetB
 
 instance Ord Ehdokas where
     Ehdokas sanaA pisteetA `compare` Ehdokas sanaB pisteetB =
-        pisteetA `compare` pisteetB
+                  pisteetA `compare` pisteetB
 
 
 -- Tuloksen selvittäminen
