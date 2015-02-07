@@ -10,6 +10,11 @@ import Debug.Trace
 import Data.Char (ord)
 import Text.Regex (splitRegex, mkRegex)
 
+
+erotinKuvaus = mkRegex "\\ |'|\\:|\\.|\r|\n|\\,|\\?|\\;|\\!|\\(|\\)|\\\"|\\_|\\/"
+konsonanttiKuvaus = mkRegex "q|w|r|t|p|s|d|f|g|h|j|k|l|z|x|c|v|b|n|m|Q|W|R|T|P|S|D|F|G|H|J|K|L|Z|X|C|V|B|N|M|0|1|2|3|4|5|6|7|8|9|-"
+
+
 data Ehdokas = Ehdokas { otaSana :: String
                        , otaPisteet :: Int
                        } deriving (Show)
@@ -25,14 +30,11 @@ instance Ord Ehdokas where
 
 -- Tuloksen selvittäminen
 
-erotinKuvaus = mkRegex "\\ |'|\\:|\\.|\r|\n|\\,|\\?|\\;|\\!|\\(|\\)|\\\"|\\_|\\/"
-
 sanoiksi teksti = splitRegex erotinKuvaus teksti
 
 ketjusta pituus =
     pituus * (2 ^ pituus)
 
-konsonanttiKuvaus = mkRegex "q|w|r|t|p|s|d|f|g|h|j|k|l|z|x|c|v|b|n|m|Q|W|R|T|P|S|D|F|G|H|J|K|L|Z|X|C|V|B|N|M|0|1|2|3|4|5|6|7|8|9|-"
 pisteytä sana =
     let vokaaliKetjut = splitRegex konsonanttiKuvaus sana
         ketjuPituudet = map length vokaaliKetjut
@@ -61,15 +63,6 @@ hassuimmat teksti =
         in voittajat
 
 
--- Pääohjelma
-
-main = do
-    putStrLn "Hassuusselvitin, Toni Ruottu 2015\n"
-    tiedosto <- selvitäTiedosto
-    aineisto <- lueAineisto tiedosto
-    putStrLn $ muotoileVastaus $ hassuimmat aineisto
-
-
 -- Tulosteen muotoilu
 
 muotoileVastaus tulos = 
@@ -84,38 +77,10 @@ muotoileVastaus tulos =
         in vastaus
 
 
--- Parametrien luku ja validointi
+-- Pääohjelma
 
-selvitäTiedosto = do
+main = do
+    putStrLn "Hassuusselvitin, Toni Ruottu 2015\n"
     komentoriviParametrit <- getArgs
-    if length komentoriviParametrit > 0
-        then return $ head komentoriviParametrit
-        else parametriVirhe
-
-
--- Tiedoston luku ja validointi
-
-lueAineisto tiedosto = do
-    aineisto <- catch (readFile tiedosto) lukuVirhe
-    return aineisto
-
-
--- Virheen raportointi
-
-virhe tyyppi kuvaus yksityiskohdat =
-    let otsikko = tyyppi ++ "virhe!"
-        rivit = otsikko : kuvaus : yksityiskohdat
-        in error $ intercalate "\n" rivit
-
-parametriVirhe =
-    let tyyppi = "Parametri"
-        kuvaus = "Anna aineistotiedoston nimi ensimmäisenä parametrina."
-        yksityiskohdat = []
-        in virhe tyyppi kuvaus yksityiskohdat 
-
-lukuVirhe :: IOError -> IO String
-lukuVirhe poikkeus = 
-    let tyyppi = "Aineiston luku"
-        kuvaus = "Aineiston lukeminen tiedostosta epäonnistui!"
-        yksityiskohdat = []
-        in virhe tyyppi kuvaus yksityiskohdat 
+    aineisto <- readFile (head komentoriviParametrit)
+    putStrLn $ muotoileVastaus $ hassuimmat aineisto
