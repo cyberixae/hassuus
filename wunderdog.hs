@@ -1,13 +1,14 @@
 import System.Environment
 import Control.Exception
 import System.IO.Error
-import System.IO.UTF8 hiding (putStrLn,)
+import System.IO.Strict (readFile)
 import Prelude hiding (readFile,)
 import qualified Data.Set as Set
 import Data.List
 import Data.List.Split
 import Debug.Trace
 import Data.Char (ord)
+import Text.Regex (splitRegex, mkRegex)
 
 
 erottimet = " ':.\r\n,?;!()\"_/"
@@ -30,16 +31,9 @@ instance Ord Ehdokas where
 
 -- Tuloksen selvittäminen
 
-erotinJoukko = Set.fromList erottimet
-erotinko kirjain = Set.member kirjain erotinJoukko
+erotinKuvaus = mkRegex "\\ |'|\\:|\\.|\r|\n|\\,|\\?|\\;|\\!|\\(|\\)|\\\"|\\_|\\/"
 
-sanoiksi teksti =
-    let alkuunSiivottu = dropWhile erotinko teksti
-        (sana, loput) = break erotinko alkuunSiivottu
-        lopuksiSiivottu = dropWhile erotinko loput
-        in if length teksti < 1
-            then []
-            else sana : sanoiksi lopuksiSiivottu
+sanoiksi teksti = splitRegex erotinKuvaus teksti
 
 ketjusta pituus =
     pituus * (2 ^ pituus)
