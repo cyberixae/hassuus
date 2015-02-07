@@ -1,3 +1,12 @@
+
+-- Hassuusselvitin, Toni Ruottu 2015
+--
+-- Vastaus Wunderdog Oy:n "hassuimmat sanat" koodauspähkinään.
+-- Tehtävänanto: http://wunderdog.fi/koodaus-hassuimmat-sanat/
+--
+-- kääntöohje:
+-- ghc -O2 -with-rtsopts="-K100m" hassuus.hs
+
 import System.Environment (getArgs)
 import Data.List (intercalate, sort)
 import Text.Regex (splitRegex, mkRegex)
