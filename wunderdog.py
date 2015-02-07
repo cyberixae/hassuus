@@ -4,10 +4,11 @@
 import sys
 import re
 
+print "Hassuusselvitin, Toni Ruottu 2015\n"
+
 kahva = open(sys.argv[1], 'r')
 aineisto = kahva.read().decode('utf8')
 kahva.close()
-#sanat = re.split(' |\'|:|.|\r|\n|,|?|;|!|(|)|"|_|/', aineisto)
 sanat = re.split(' |\'|\:|\.|\r|\n|\,|\?|\;|\!|\(|\)|\"|\_|\/', aineisto)
 
 def laske_pisteet(sana):
@@ -28,4 +29,5 @@ sanaLause = u'Hassuimmat sanat olivat: ' + u', '.join(sorted(johto))
 pisteLause =  u'Nämä saivat ' + unicode(korkein) + u' pistettä.'
 rivit = [sanaLause, pisteLause]
 vastaus = u'\n'.join(rivit)
+
 print vastaus.encode('utf8')
