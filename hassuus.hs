@@ -4,7 +4,7 @@
 -- Vastaus Wunderdog Oy:n "hassuimmat sanat" koodauspähkinään.
 -- Tehtävänanto: http://wunderdog.fi/koodaus-hassuimmat-sanat/
 --
--- kääntöohje:
+-- Kääntöohje:
 -- ghc -O2 -with-rtsopts="-K100m" hassuus.hs
 
 import System.Environment (getArgs)
