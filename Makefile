@@ -1,5 +1,5 @@
 all:
-	ghc -O2 -with-rtsopts="-K100m" wunderdog.hs
+	ghc -O2 -with-rtsopts="-K100m" hassuus.hs
 
 prof:
-	ghc -prof -fprof-auto -rtsopts wunderdog.hs
+	ghc -prof -fprof-auto -rtsopts hassuus.hs
