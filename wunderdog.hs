@@ -11,7 +11,6 @@ import Data.Char (ord)
 import Text.Regex (splitRegex, mkRegex)
 
 
-erottimet = " ':.\r\n,?;!()\"_/"
 vokaalit = "qeyuioåaöäüQEYUIOÅAÖÄÜ"
 muut = "wrtpsdfghjklzxcvbnmWRTPSDFGHJKLZXCVBNM0123456789-"
 
@@ -100,17 +99,9 @@ selvitäTiedosto = do
 
 -- Tiedoston luku ja validointi
 
-validoi teksti =
-    let merkit = nub teksti
-        tunnetut = erottimet ++ vokaalit ++ muut
-        tuntemattomat = merkit \\ tunnetut
-        in if length tuntemattomat > 0
-            then merkkiVirhe tuntemattomat
-            else ()
-
 lueAineisto tiedosto = do
     aineisto <- catch (readFile tiedosto) lukuVirhe
-    seq (validoi aineisto) $ return aineisto
+    return aineisto
 
 
 -- Virheen raportointi
@@ -131,18 +122,4 @@ lukuVirhe poikkeus =
     let tyyppi = "Aineiston luku"
         kuvaus = "Aineiston lukeminen tiedostosta epäonnistui!"
         yksityiskohdat = []
-        in virhe tyyppi kuvaus yksityiskohdat 
-
-ongelmaMerkinKuvaus (järjestysNumero, merkki) =
-    let kuvaus = (show järjestysNumero) ++ ". tuntematon merkki:"
-        esimerkki = "'" ++ [merkki] ++ "'"
-        merkkiKoodi = show $ ord merkki
-        rivit = kuvaus : esimerkki : merkkiKoodi : []
-        in intercalate " " rivit
-
-merkkiVirhe tuntemattomat =
-    let tyyppi = "Aineistomuoto"
-        kuvaus = "Tiedosto sisältää tuntemattomia merkkejä."
-        ongelmaMerkit = zip [1..] tuntemattomat
-        yksityiskohdat = map ongelmaMerkinKuvaus ongelmaMerkit
         in virhe tyyppi kuvaus yksityiskohdat 
