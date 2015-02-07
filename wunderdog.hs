@@ -10,11 +10,6 @@ import Debug.Trace
 import Data.Char (ord)
 import Text.Regex (splitRegex, mkRegex)
 
-
-vokaalit = "qeyuioåaöäüQEYUIOÅAÖÄÜ"
-muut = "wrtpsdfghjklzxcvbnmWRTPSDFGHJKLZXCVBNM0123456789-"
-
-
 data Ehdokas = Ehdokas { otaSana :: String
                        , otaPisteet :: Int
                        } deriving (Show)
@@ -37,9 +32,10 @@ sanoiksi teksti = splitRegex erotinKuvaus teksti
 ketjusta pituus =
     pituus * (2 ^ pituus)
 
+konsonanttiKuvaus = mkRegex "q|w|r|t|p|s|d|f|g|h|j|k|l|z|x|c|v|b|n|m|Q|W|R|T|P|S|D|F|G|H|J|K|L|Z|X|C|V|B|N|M|0|1|2|3|4|5|6|7|8|9|-"
 pisteytä sana =
-    let ketjut = splitOneOf muut sana
-        ketjuPituudet = map length ketjut
+    let vokaaliKetjut = splitRegex konsonanttiKuvaus sana
+        ketjuPituudet = map length vokaaliKetjut
         ketjuPisteet = map ketjusta ketjuPituudet
         in sum ketjuPisteet
 
